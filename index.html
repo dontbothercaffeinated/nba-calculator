@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NBA Games Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table, th, td {
+      border: 1px solid black;
+    }
+    th, td {
+      padding: 8px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>NBA Games Viewer</h1>
+  <label for="team">Select a Team:</label>
+  <select id="team">
+    <option value="">-- Select a Team --</option>
+  </select>
+  <button id="fetch">Fetch Games</button>
+
+  <table id="games-table" style="display: none;">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Matchup</th>
+        <th>Team Score</th>
+        <th>Opponent Score</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

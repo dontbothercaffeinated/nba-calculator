@@ -1,0 +1,12 @@
+{
+  "name": "nba-electron-app",
+  "version": "1.0.0",
+  "description": "An NBA game viewer built with Electron",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^26.1.0"
+  }
+}
