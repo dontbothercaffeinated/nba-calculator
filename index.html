@@ -1,48 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NBA Games Viewer</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NBA Games Dashboard</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
+      margin: 20px;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
+    h1 {
+      text-align: center;
+    }
+    form {
+      margin-bottom: 20px;
+    }
+    label {
+      margin-right: 10px;
+    }
+    select, button {
+      margin: 5px 0;
+      padding: 5px;
+    }
+    #results {
       margin-top: 20px;
     }
-    table, th, td {
-      border: 1px solid black;
+    .game {
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
     }
-    th, td {
-      padding: 8px;
-      text-align: center;
+    .game p {
+      margin: 5px 0;
     }
   </style>
 </head>
 <body>
-  <h1>NBA Games Viewer</h1>
-  <label for="team">Select a Team:</label>
-  <select id="team">
-    <option value="">-- Select a Team --</option>
-  </select>
-  <button id="fetch">Fetch Games</button>
+  <h1>NBA Games Dashboard</h1>
+  <form id="filterForm">
+    <label for="season">Select Season:</label>
+    <select id="season" name="season" required>
+      <option value="" disabled selected>Select a season</option>
+    </select>
+    <br>
+    <label for="team">Select Team:</label>
+    <select id="team" name="team" required>
+      <option value="" disabled selected>Select a team</option>
+    </select>
+    <br>
+    <button type="submit">Filter Games</button>
+  </form>
 
-  <table id="games-table" style="display: none;">
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Matchup</th>
-        <th>Team Score</th>
-        <th>Opponent Score</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <div id="results">
+    <h2>Filtered Results</h2>
+    <!-- Filtered game results will be inserted here dynamically -->
+  </div>
 
-  <script src="renderer.js"></script>
+  <script src="./renderer.js"></script>
 </body>
 </html>
