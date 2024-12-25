@@ -98,6 +98,9 @@
       const winSpreadZScore = ((winSpread - winSpreadStats.mean) / winSpreadStats.stdDev).toFixed(3);
       const tableRankSpreadZScore = ((tableRankSpread - tableRankSpreadStats.mean) / tableRankSpreadStats.stdDev).toFixed(3);
   
+      // Calculate Game Impressiveness
+      const gameImpressiveness = (parseFloat(winSpreadZScore) + parseFloat(tableRankSpreadZScore)).toFixed(3);
+  
       const gameDiv = document.createElement('div');
       gameDiv.innerHTML = `
         <p><strong>${selectedTeam} (${selectedTeamScore})</strong> (${selectedTeamPct.toFixed(3)}) vs 
@@ -107,6 +110,7 @@
         <p>Table Rank Spread: ${tableRankSpread}</p>
         <p>Win Spread Z-Score: ${winSpreadZScore}</p>
         <p>Table Rank Spread Z-Score: ${tableRankSpreadZScore}</p>
+        <p><strong>Game Impressiveness: ${gameImpressiveness}</strong></p>
       `;
       resultsDiv.appendChild(gameDiv);
     }
