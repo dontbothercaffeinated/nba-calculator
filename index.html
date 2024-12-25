@@ -34,6 +34,23 @@
     .game p {
       margin: 5px 0;
     }
+    .game-header {
+      border: 1px solid #888;
+      padding: 5px;
+      background-color: #f9f9f9;
+      font-weight: bold;
+      margin-bottom: 10px;
+      border-radius: 5px;
+    }
+    #impressiveness-container {
+      border: 2px solid #007BFF;
+      background-color: #f0f8ff;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      text-align: center;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -49,6 +66,9 @@
       <option value="" disabled selected>Select a team</option>
     </select>
     <br>
+    <div id="impressiveness-container">
+      Season Impressiveness Score: <span id="impressivenessScore">N/A</span>
+    </div>
     <button type="submit">Filter Games</button>
   </form>
 
