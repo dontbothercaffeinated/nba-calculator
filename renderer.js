@@ -27,18 +27,20 @@
     const selectedTeamId = parseInt(teamDropdown.value); // Selected team ID
     const games = await window.electron.getFilteredGames(season, selectedTeamId);
   
+    const winSpreadValues = [];
+    const tableRankSpreadValues = [];
+    const gameData = []; // To store each game's data for Z-Score calculations
+  
     const resultsDiv = document.getElementById('results');
     resultsDiv.innerHTML = '';
   
     for (const game of games) {
-      // Fetch team win/loss percentages (.pct) for both home and visitor teams
       const homeTeamPct = parseFloat(await window.electron.getTeamPct(game.home_team.full_name));
       const visitorTeamPct = parseFloat(await window.electron.getTeamPct(game.visitor_team.full_name));
   
       let selectedTeam, opponentTeam, selectedTeamScore, opponentTeamScore;
       let selectedTeamPct, opponentTeamPct;
   
-      // Determine which team is the selected team and which is the opponent
       if (game.home_team.id === selectedTeamId) {
         selectedTeam = game.home_team.full_name;
         opponentTeam = game.visitor_team.full_name;
@@ -54,15 +56,48 @@
         selectedTeamPct = visitorTeamPct;
         opponentTeamPct = homeTeamPct;
       } else {
-        // Skip this game if neither team matches the selected team
-        continue;
+        continue; // Skip games that don't involve the selected team
       }
   
-      // Calculate Win Spread and Table Rank Spread
-      const winSpread = selectedTeamScore - opponentTeamScore; // Selected team score - Opponent team score
-      const tableRankSpread = (opponentTeamPct - selectedTeamPct).toFixed(3); // Opponent pct - Selected team pct
+      const winSpread = selectedTeamScore - opponentTeamScore;
+      const tableRankSpread = opponentTeamPct - selectedTeamPct;
   
-      // Create and display game information
+      // Push values into datasets
+      winSpreadValues.push(winSpread);
+      tableRankSpreadValues.push(tableRankSpread);
+  
+      // Store game data
+      gameData.push({
+        game,
+        selectedTeam,
+        opponentTeam,
+        selectedTeamScore,
+        opponentTeamScore,
+        selectedTeamPct,
+        opponentTeamPct,
+        winSpread,
+        tableRankSpread,
+      });
+    }
+  
+    // Calculate Mean and Standard Deviation for Win Spread and Table Rank Spread
+    const calculateStats = (values) => {
+      const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
+      const variance = values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length;
+      const stdDev = Math.sqrt(variance);
+      return { mean, stdDev };
+    };
+  
+    const winSpreadStats = calculateStats(winSpreadValues);
+    const tableRankSpreadStats = calculateStats(tableRankSpreadValues);
+  
+    // Render games with calculated Z-Scores
+    for (const data of gameData) {
+      const { game, selectedTeam, opponentTeam, selectedTeamScore, opponentTeamScore, selectedTeamPct, opponentTeamPct, winSpread, tableRankSpread } = data;
+  
+      const winSpreadZScore = ((winSpread - winSpreadStats.mean) / winSpreadStats.stdDev).toFixed(3);
+      const tableRankSpreadZScore = ((tableRankSpread - tableRankSpreadStats.mean) / tableRankSpreadStats.stdDev).toFixed(3);
+  
       const gameDiv = document.createElement('div');
       gameDiv.innerHTML = `
         <p><strong>${selectedTeam} (${selectedTeamScore})</strong> (${selectedTeamPct.toFixed(3)}) vs 
@@ -70,6 +105,8 @@
         <p>Date: ${game.date}</p>
         <p>Win Spread: ${winSpread}</p>
         <p>Table Rank Spread: ${tableRankSpread}</p>
+        <p>Win Spread Z-Score: ${winSpreadZScore}</p>
+        <p>Table Rank Spread Z-Score: ${tableRankSpreadZScore}</p>
       `;
       resultsDiv.appendChild(gameDiv);
     }
