@@ -12,6 +12,16 @@
     h1 {
       text-align: center;
     }
+    .dashboard-container {
+      display: flex;
+      gap: 20px;
+    }
+    .dashboard {
+      flex: 1;
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 5px;
+    }
     form {
       margin-bottom: 20px;
     }
@@ -55,26 +65,52 @@
 </head>
 <body>
   <h1>NBA Games Dashboard</h1>
-  <form id="filterForm">
-    <label for="season">Select Season:</label>
-    <select id="season" name="season" required>
-      <option value="" disabled selected>Select a season</option>
-    </select>
-    <br>
-    <label for="team">Select Team:</label>
-    <select id="team" name="team" required>
-      <option value="" disabled selected>Select a team</option>
-    </select>
-    <br>
-    <div id="impressiveness-container">
-      Season Impressiveness Score: <span id="impressivenessScore">N/A</span>
+  <div class="dashboard-container">
+    <!-- Dashboard 1 -->
+    <div class="dashboard">
+      <form id="filterForm1">
+        <label for="season1">Select Season:</label>
+        <select id="season1" name="season" required>
+          <option value="" disabled selected>Select a season</option>
+        </select>
+        <br>
+        <label for="team1">Select Team:</label>
+        <select id="team1" name="team" required>
+          <option value="" disabled selected>Select a team</option>
+        </select>
+        <br>
+        <div id="impressiveness-container1">
+          Season Impressiveness Score: <span id="impressivenessScore1">N/A</span>
+        </div>
+        <button type="submit">Filter Games</button>
+      </form>
+      <div id="results1">
+        <h2>Filtered Results</h2>
+      </div>
     </div>
-    <button type="submit">Filter Games</button>
-  </form>
 
-  <div id="results">
-    <h2>Filtered Results</h2>
-    <!-- Filtered game results will be inserted here dynamically -->
+    <!-- Dashboard 2 -->
+    <div class="dashboard">
+      <form id="filterForm2">
+        <label for="season2">Select Season:</label>
+        <select id="season2" name="season" required>
+          <option value="" disabled selected>Select a season</option>
+        </select>
+        <br>
+        <label for="team2">Select Team:</label>
+        <select id="team2" name="team" required>
+          <option value="" disabled selected>Select a team</option>
+        </select>
+        <br>
+        <div id="impressiveness-container2">
+          Season Impressiveness Score: <span id="impressivenessScore2">N/A</span>
+        </div>
+        <button type="submit">Filter Games</button>
+      </form>
+      <div id="results2">
+        <h2>Filtered Results</h2>
+      </div>
+    </div>
   </div>
 
   <script src="./renderer.js"></script>
