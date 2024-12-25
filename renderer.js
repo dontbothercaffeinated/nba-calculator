@@ -1,9 +1,20 @@
 (async () => {
-  const setupDashboard = async (formId, seasonDropdownId, teamDropdownId, resultsId, impressivenessContainerId) => {
+  const setupDashboard = async (
+    formId,
+    seasonDropdownId,
+    teamDropdownId,
+    resultsId,
+    impressivenessContainerId,
+    probabilityContainerId,
+    marketOddsInputId,
+    marketWinProbabilityId,
+    evCalculationId,
+    otherImpressivenessContainerId
+  ) => {
     const seasons = await window.electron.getSeasons();
     const seasonDropdown = document.getElementById(seasonDropdownId);
-    seasons.forEach(season => {
-      const option = document.createElement('option');
+    seasons.forEach((season) => {
+      const option = document.createElement("option");
       option.value = season;
       option.textContent = season;
       seasonDropdown.appendChild(option);
@@ -11,14 +22,14 @@
 
     const teams = await window.electron.getTeams();
     const teamDropdown = document.getElementById(teamDropdownId);
-    teams.forEach(team => {
-      const option = document.createElement('option');
+    teams.forEach((team) => {
+      const option = document.createElement("option");
       option.value = team.id;
       option.textContent = team.full_name;
       teamDropdown.appendChild(option);
     });
 
-    document.getElementById(formId).addEventListener('submit', async (event) => {
+    document.getElementById(formId).addEventListener("submit", async (event) => {
       event.preventDefault();
 
       const season = seasonDropdown.value;
@@ -31,7 +42,10 @@
 
       const resultsDiv = document.getElementById(resultsId);
       const impressivenessScoreSpan = document.getElementById(impressivenessContainerId);
-      resultsDiv.innerHTML = '';
+      const winProbabilitySpan = document.getElementById(probabilityContainerId);
+      const marketWinProbabilitySpan = document.getElementById(marketWinProbabilityId);
+      const evCalculationSpan = document.getElementById(evCalculationId);
+      resultsDiv.innerHTML = "";
 
       for (const game of games) {
         const homeTeamPct = parseFloat(await window.electron.getTeamPct(game.home_team.full_name));
@@ -90,7 +104,7 @@
       let totalAdjustedGameImpressiveness = 0;
       let minGameImpressiveness = Number.MAX_VALUE;
 
-      const gameImpressivenessValues = gameData.map(data => {
+      const gameImpressivenessValues = gameData.map((data) => {
         const winSpreadZScore = ((data.winSpread - winSpreadStats.mean) / winSpreadStats.stdDev).toFixed(3);
         const tableRankSpreadZScore = ((data.tableRankSpread - tableRankSpreadStats.mean) / tableRankSpreadStats.stdDev).toFixed(3);
 
@@ -110,7 +124,7 @@
         const adjustedGameImpressiveness = (parseFloat(gameImpressiveness) + adjustmentFactor).toFixed(3);
         totalAdjustedGameImpressiveness += parseFloat(adjustedGameImpressiveness);
 
-        const gameDiv = document.createElement('div');
+        const gameDiv = document.createElement("div");
         gameDiv.innerHTML = `
           <div class="game-header">${data.selectedTeam} (${data.selectedTeamScore}) vs ${data.opponentTeam} (${data.opponentTeamScore})</div>
           <p>Date: ${data.game.date}</p>
@@ -125,9 +139,59 @@
       }
 
       impressivenessScoreSpan.textContent = totalAdjustedGameImpressiveness.toFixed(3);
+
+      const impressivenessScore1 = parseFloat(document.getElementById("impressivenessScore1").textContent);
+      const impressivenessScore2 = parseFloat(document.getElementById("impressivenessScore2").textContent);
+
+      if (!isNaN(impressivenessScore1) && !isNaN(impressivenessScore2)) {
+        const winProbability1 = (
+          impressivenessScore1 /
+          (impressivenessScore1 + impressivenessScore2)
+        ).toFixed(3);
+        const winProbability2 = (
+          impressivenessScore2 /
+          (impressivenessScore1 + impressivenessScore2)
+        ).toFixed(3);
+
+        document.getElementById("winProbability1").textContent = winProbability1;
+        document.getElementById("winProbability2").textContent = winProbability2;
+
+        // Calculate market probabilities and EV
+        const marketOdds1 = parseFloat(document.getElementById(marketOddsInputId).value || 0);
+        if (marketOdds1 > 1) {
+          const marketProbability1 = (1 / marketOdds1).toFixed(3);
+          marketWinProbabilitySpan.textContent = marketProbability1;
+
+          const ev = ((winProbability1 - marketProbability1) * marketOdds1).toFixed(3);
+          evCalculationSpan.textContent = ev;
+        }
+      }
     });
   };
 
-  setupDashboard('filterForm1', 'season1', 'team1', 'results1', 'impressivenessScore1');
-  setupDashboard('filterForm2', 'season2', 'team2', 'results2', 'impressivenessScore2');
+  setupDashboard(
+    "filterForm1",
+    "season1",
+    "team1",
+    "results1",
+    "impressivenessScore1",
+    "winProbability1",
+    "marketOdds1",
+    "marketWinProbability1",
+    "ev1",
+    "impressivenessScore2"
+  );
+
+  setupDashboard(
+    "filterForm2",
+    "season2",
+    "team2",
+    "results2",
+    "impressivenessScore2",
+    "winProbability2",
+    "marketOdds2",
+    "marketWinProbability2",
+    "ev2",
+    "impressivenessScore1"
+  );
 })();

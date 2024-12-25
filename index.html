@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NBA Games Dashboard</title>
+  <br>
+  Results may vary. Do not assume data used it correct. Do not gamble using this.
+  <br>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -28,7 +31,7 @@
     label {
       margin-right: 10px;
     }
-    select, button {
+    select, button, input {
       margin: 5px 0;
       padding: 5px;
     }
@@ -61,6 +64,13 @@
       text-align: center;
       font-weight: bold;
     }
+    .market-section {
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
   </style>
 </head>
 <body>
@@ -82,7 +92,14 @@
         <div id="impressiveness-container1">
           Season Impressiveness Score: <span id="impressivenessScore1">N/A</span>
         </div>
-        <button type="submit">Filter Games</button>
+        <div>Win Probability: <span id="winProbability1">N/A</span></div>
+        <div class="market-section">
+          <label for="marketOdds1">Market Odds (Decimal):</label>
+          <input type="number" id="marketOdds1" placeholder="Enter odds" step="0.01" />
+          <div>Market Win Probability: <span id="marketWinProbability1">N/A</span></div>
+          <div>EV: <span id="ev1">N/A</span></div>
+        </div>
+        <button type="submit">Calculate</button>
       </form>
       <div id="results1">
         <h2>Filtered Results</h2>
@@ -105,7 +122,14 @@
         <div id="impressiveness-container2">
           Season Impressiveness Score: <span id="impressivenessScore2">N/A</span>
         </div>
-        <button type="submit">Filter Games</button>
+        <div>Win Probability: <span id="winProbability2">N/A</span></div>
+        <div class="market-section">
+          <label for="marketOdds2">Market Odds (Decimal):</label>
+          <input type="number" id="marketOdds2" placeholder="Enter odds" step="0.01" />
+          <div>Market Win Probability: <span id="marketWinProbability2">N/A</span></div>
+          <div>EV: <span id="ev2">N/A</span></div>
+        </div>
+        <button type="submit">Calculate</button>
       </form>
       <div id="results2">
         <h2>Filtered Results</h2>
