@@ -5,6 +5,10 @@ const { BalldontlieAPI } = require('@balldontlie/sdk');
 const { fetchAndStoreWinsLosses, getWinsLossesData } = require('./winsLossesService');
 
 let mainWindow;
+const apiCache = {
+  teams: null,
+  games: {},
+};
 
 // Load the API key from the config.json file
 let apiKey;
@@ -21,8 +25,8 @@ const api = new BalldontlieAPI({ apiKey });
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: 800,
+    height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
@@ -44,19 +48,29 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
 
-// Handle the request to fetch teams
+// Fetch teams and cache them
 ipcMain.handle('get-teams', async () => {
+  if (apiCache.teams) {
+    console.log('Returning cached teams data');
+    return apiCache.teams;
+  }
   try {
     const response = await api.nba.getTeams();
-    return response.data;
+    apiCache.teams = response.data;
+    return apiCache.teams;
   } catch (error) {
     console.error('Error fetching teams:', error);
     return [];
   }
 });
 
-// Handle the request to fetch games
+// Fetch games for a team and cache them
 ipcMain.handle('get-filtered-games', async (event, season, teamId) => {
+  const cacheKey = `${season}-${teamId}`;
+  if (apiCache.games[cacheKey]) {
+    console.log(`Returning cached games for season ${season}, team ID ${teamId}`);
+    return apiCache.games[cacheKey];
+  }
   try {
     const allGames = [];
     let cursor = 0;
@@ -80,6 +94,8 @@ ipcMain.handle('get-filtered-games', async (event, season, teamId) => {
       return isCompleted;
     });
 
+    // Cache the result
+    apiCache.games[cacheKey] = completedRegularSeasonGames;
     return completedRegularSeasonGames;
   } catch (error) {
     console.error('Error fetching games:', error);
